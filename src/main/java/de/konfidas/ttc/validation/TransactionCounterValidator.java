@@ -17,7 +17,7 @@ public class TransactionCounterValidator implements Validator {
     final HashMap<String, Transaction> openTransactions; // TODO: allow multiple TSE SERIAL
     final HashMap<String,BigInteger> expectedTransactionCounters;
 
-    TransactionCounterValidator(){
+    public TransactionCounterValidator(){
         openTransactions = new HashMap<>();
         expectedTransactionCounters = new HashMap<>();
     }
