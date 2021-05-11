@@ -56,7 +56,10 @@ public class HtmlReporterTest {
         Validator v = new AggregatedValidator()
                 .add(new CertificateFileNameValidator())
                 .add(new LogMessageSignatureValidator())
-                .add(new SignatureCounterValidator());
+                .add(new SignatureCounterValidator())
+                .add(new TransactionCounterValidator())
+                .add(new TimeStampValidator())
+                .add(new LogMessageFileNameValidator());
 
         ValidationResult result = v.validate(tar);
 
