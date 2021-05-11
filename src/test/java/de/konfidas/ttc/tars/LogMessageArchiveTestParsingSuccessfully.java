@@ -72,6 +72,6 @@ public class LogMessageArchiveTestParsingSuccessfully {
                 .add(new TransactionCounterValidator());
 
         Collection<ValidationException> errors = v.validate(tar);
-        assertTrue(errors.size() == 1);
+        assertTrue(errors.size() == 7);
     }
 }
