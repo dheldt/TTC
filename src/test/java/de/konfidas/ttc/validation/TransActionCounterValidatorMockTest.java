@@ -92,7 +92,7 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
 
@@ -104,7 +104,7 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.TWO, "Start"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.TWO, "StartTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
         assertTrue(r.size() == 1);
@@ -117,8 +117,8 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.TWO, "Start"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.TWO, "StartTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
 
@@ -130,8 +130,8 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
         assertTrue(r.size() == 1);
@@ -144,7 +144,7 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
 
@@ -157,7 +157,7 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Finish"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
 
@@ -170,10 +170,10 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Finish"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
 
@@ -186,10 +186,10 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Finish"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Finish"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
 
@@ -202,12 +202,12 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Update"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Finish"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
 
 
         Collection<ValidationException> r = validator.validate(tar);
@@ -221,8 +221,8 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "Start"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "StartTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
         assertTrue(r.isEmpty());
@@ -234,8 +234,8 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "Update"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "UpdateTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
         assertTrue(r.size() == 1);
@@ -247,8 +247,8 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "Finish"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "FinishTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
         assertTrue(r.size() == 1);
@@ -260,8 +260,8 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x02}, BigInteger.TWO, "Start"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x02}, BigInteger.TWO, "StartTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
         assertTrue(r.size() == 1);
@@ -273,10 +273,10 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "Start"));
-        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "Finish"));
-        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "Finish"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "StartTransaction"));
+        messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
+        messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "FinishTransaction"));
 
         Collection<ValidationException> r = validator.validate(tar);
         assertTrue(r.isEmpty());

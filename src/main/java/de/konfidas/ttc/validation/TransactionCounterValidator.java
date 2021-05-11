@@ -47,7 +47,7 @@ public class TransactionCounterValidator implements Validator {
 
         final String key= hexSerial+"_"+msg.getTransactionNumber();
         BigInteger transactionNumber = msg.getTransactionNumber();
-        if("Start".equals(msg.getOperationType())){
+        if("StartTransaction".equals(msg.getOperationType())){
             if(expectedTransactionCounter.compareTo(transactionNumber)<0){
                 result.add(new MissingTransactionCounterException(expectedTransactionCounter, msg));
                 expectedTransactionCounter = transactionNumber.add(BigInteger.ONE);
@@ -65,7 +65,7 @@ public class TransactionCounterValidator implements Validator {
             }
         }
 
-        if("Update".equals(msg.getOperationType())){
+        if("UpdateTransaction".equals(msg.getOperationType())){
             if(!openTransactions.containsKey(key)){
                 result.add(new UpdateForNotOpenTransactionException(expectedTransactionCounter, msg));
             }else{
@@ -75,7 +75,7 @@ public class TransactionCounterValidator implements Validator {
             }
         }
 
-        if("Finish".equals(msg.getOperationType())){
+        if("FinishTransaction".equals(msg.getOperationType())){
             if(!openTransactions.containsKey(key)){
                 result.add(new FinishForNotOpenTransactionException(expectedTransactionCounter, msg));
             }else{
