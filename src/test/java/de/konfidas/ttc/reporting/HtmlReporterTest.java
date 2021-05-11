@@ -51,7 +51,7 @@ public class HtmlReporterTest {
         LogMessageArchiveImplementation tar  = new LogMessageArchiveImplementation(this.file);
 
         File reportFile = new File("./Report_"+this.file.getName()+".html");
-
+        File advancedReportFile = new File("./AdvancedReport_"+this.file.getName()+".html");
 
         Validator v = new AggregatedValidator()
                 .add(new CertificateFileNameValidator())
@@ -64,12 +64,13 @@ public class HtmlReporterTest {
         ValidationResult result = v.validate(tar);
 
         HtmlReporter reporter = new HtmlReporter(reportFile).skipLegitLogMessages();
+        Reporter advancedReporter = new AdvancedHtmlReporter(advancedReportFile);
 
         // enable the following line ot make the reporter ignore this Exception class, i.e. not reporting it:
         // reporter.ignoreIssue(SignatureCounterValidator.SignatureCounterMissingException.class);
 
         reporter.createReport(Collections.singleton(tar), result);
-        System.out.println(reportFile.getAbsoluteFile());
+        advancedReporter.createReport(Collections.singleton(tar), result);
     }
 
 }

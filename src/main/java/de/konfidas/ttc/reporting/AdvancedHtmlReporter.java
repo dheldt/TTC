@@ -16,33 +16,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-public class HtmlReporter implements Reporter<Integer> { // I do not need the int here. Interface does not really fit me.
+public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not need the int here. Interface does not really fit me.
     File file;
     boolean skipLegitLogMessages;
     HashSet<Class<? extends ValidationException>> issuesToIgnore;
 
-    public HtmlReporter(File file){
+    public AdvancedHtmlReporter(File file){
         this.file= file;
         this.issuesToIgnore = new HashSet<>();
-        skipLegitLogMessages = false;
+
     }
 
-    HtmlReporter skipLegitLogMessages(){
-        skipLegitLogMessages = true;
-        return this;
-    }
-
-    HtmlReporter skipLegitLogMessages(boolean skipLegitLogMessages){
-        this.skipLegitLogMessages = skipLegitLogMessages;
-        return this;
-    }
-
-    HtmlReporter ignoreIssue(Class<? extends ValidationException> t){
+    AdvancedHtmlReporter ignoreIssue(Class<? extends ValidationException> t){
         issuesToIgnore.add(t);
         return this;
     }
 
-    HtmlReporter ignoreIssues(Collection<Class<? extends ValidationException>> c){
+    AdvancedHtmlReporter ignoreIssues(Collection<Class<? extends ValidationException>> c){
         issuesToIgnore.addAll(c);
         return this;
     }
@@ -104,28 +94,34 @@ public class HtmlReporter implements Reporter<Integer> { // I do not need the in
         if(skipLegitLogMessages){
             bw.write("(legit log messages were skipped in this report)<br>");
         }
-        bw.write("<ul>");
-
         for(LogMessageArchive tar : logs){
             for (LogMessage lm : tar.getSortedLogMessages()){
-                if(!map.containsKey(lm)){
-                    if(!skipLegitLogMessages) {
-                        bw.write("<li>" + lm.getFileName() + " seems legit.</li>");
-                    }
-                }else{
-                    bw.write("<li>");
-                    bw.write("Found the following issues while validating "+lm.getFileName()+":");
-                    bw.write("<ul>");
-                    for(LogMessageValidationException e : map.get(lm)) {
-                        bw.write("<li>" + e.toString() + "</li>");
-                    }
-                    bw.write("</ul>");
-                    bw.write("</li>");
-                }
+                printLogMessage(bw, map, lm);
 
             }
+        }
+    }
 
-            bw.write("</ul>");        }
+    void printLogMessage(BufferedWriter bw, HashMap<LogMessage, LinkedList<LogMessageValidationException>> map, LogMessage lm) throws IOException {
+        final String id= "LogMessage"+lm.hashCode();
+
+        String bgColor = "#00FF00";
+        if(map.containsKey(lm)){
+            bgColor = "#FF0000";
+        }
+        bw.write("<div id="+id+" style=\"background-color:"+bgColor+"\">\n");
+        bw.write("  "+lm.getFileName()+": \n");
+
+        if(!map.containsKey(lm)){
+        }else{
+            bw.write("  <ul>\n");
+            for(LogMessageValidationException e : map.get(lm)) {
+                bw.write("    <li>" + e.toString() + "</li>\n");
+            }
+            bw.write("  </ul>\n");
+       
+        }
+        bw.write("</div>\n");
     }
 
     void printErrorNum(BufferedWriter bw, Collection<ValidationException> validationErrors) throws IOException {
