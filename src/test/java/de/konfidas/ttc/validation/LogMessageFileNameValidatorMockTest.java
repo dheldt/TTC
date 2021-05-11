@@ -113,7 +113,7 @@ public class LogMessageFileNameValidatorMockTest {
     public void testEmpty(){
         LogMessageFileNameValidator validator = new LogMessageFileNameValidator();
         LogMessageArchive tar = new TestTar();
-        assertTrue(validator.validate(tar).isEmpty());
+        assertTrue(validator.validate(tar).getValidationErrors().isEmpty());
     }
 
 
@@ -127,7 +127,7 @@ public class LogMessageFileNameValidatorMockTest {
                 ""));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 8);
     }
 
@@ -144,7 +144,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Start_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.isEmpty());
     }
 
@@ -161,7 +161,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Update_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.isEmpty());
     }
 
@@ -178,7 +178,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Finish_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.isEmpty());
     }
 
@@ -195,7 +195,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Finish_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.OperationTypeMismatchException);
     }
@@ -213,7 +213,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Foo_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.UnknownOperationTypeException);
     }
@@ -231,7 +231,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Bar_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 2);
     }
 
@@ -248,7 +248,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Start_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.DifferentClientException);
     }
@@ -266,7 +266,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Start_Client03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.BadFormattedClientTagException);
     }
@@ -284,7 +284,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-713_Start_Cli3nt-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.MissingClientTagException);
     }
@@ -302,7 +302,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No-712_Start_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.DifferentTransCounterException);
     }
@@ -320,7 +320,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_No712_Start_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.BadFormattedTransTagException);
     }
@@ -338,7 +338,7 @@ public class LogMessageFileNameValidatorMockTest {
                 "Utc_181109153045Z_Sig-1572_Log-Tra_Nr-713_Start_Client-03.log"));
 
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionLogFileNameValidator.MissingTransTagException);
     }

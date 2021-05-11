@@ -94,7 +94,7 @@ public class AuditLogFileNameValidatorMockTest {
     public void testEmpty(){
         AuditLogFileNameValidator validator = new AuditLogFileNameValidator();
         LogMessageArchive tar = new TestTar();
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
@@ -106,7 +106,7 @@ public class AuditLogFileNameValidatorMockTest {
 
         messages.add(new ALM(BigInteger.ONE, new byte[]{}, null, ""));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 6);
     }
@@ -122,10 +122,8 @@ public class AuditLogFileNameValidatorMockTest {
                  new UnixLogTime(1543565694),
                 "Unixt_1543565694_Sig-1853_Log-Aud_Fc-1.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
-
-
 }

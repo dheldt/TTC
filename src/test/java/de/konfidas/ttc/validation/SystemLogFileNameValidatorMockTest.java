@@ -94,7 +94,7 @@ public class SystemLogFileNameValidatorMockTest {
         SystemLogFileNameValidator validator = new SystemLogFileNameValidator();
         LogMessageArchive tar = new TestTar();
 
-        assertTrue(validator.validate(tar).isEmpty());
+        assertTrue(validator.validate(tar).getValidationErrors().isEmpty());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class SystemLogFileNameValidatorMockTest {
 
         messages.add(new SLM(BigInteger.ONE, new byte[]{}, null, ""));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 7);
     }
@@ -120,7 +120,7 @@ public class SystemLogFileNameValidatorMockTest {
                  new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084236Z")),
                 "Gent_20181109084236Z_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
@@ -136,7 +136,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084236Z")),
                 "Gent_20181109084236Z_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.DifferentSigCounterException);
@@ -152,7 +152,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084236Z")),
                 "Gent_20181109084236Z_Tig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.MissingSigTagException);
@@ -168,7 +168,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084236Z")),
                 "Gent_20181109084236Z_Sig1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.BadFormattedSigTagException);
@@ -185,7 +185,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084236Z")),
                 "Gent_20181109084236Z_Sig-1743_Log-Tra_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.WrongLogFormatException);
@@ -202,7 +202,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084237Z")),
                 "Gent_20181109084236Z_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.DifferentLogTimeException);
@@ -218,7 +218,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new UtcLogTime(new ASN1UTCTime("181109084236Z")),
                 "Gent_20181109084236Z_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.DifferentLogTimeTypeException);
@@ -235,7 +235,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new UtcLogTime(new ASN1UTCTime("181109084236Z")),
                 "Utc_181109084236Z_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
@@ -251,7 +251,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084236Z")),
                 "Utc_181109084236Z_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.DifferentLogTimeTypeException);
@@ -268,7 +268,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new GeneralizedLogTime(new ASN1GeneralizedTime("20181109084237Z")),
                 "Gent_AAA_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.WrongLogTimeInNameException);
@@ -283,7 +283,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new UtcLogTime(new ASN1UTCTime("181109084236Z")),
                 "Utc_AAA_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.WrongLogTimeInNameException);
@@ -299,7 +299,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new UnixLogTime(123),
                 "Unixt_AAA_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.WrongLogTimeInNameException);
@@ -316,7 +316,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new UnixLogTime(123),
                 "Unixt_123_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.isEmpty());
     }
 
@@ -329,7 +329,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new byte[]{},
                 new UtcLogTime(new ASN1UTCTime("181109084236Z")),
                 "Unixt_123_Sig-1743_Log-Sys_UpdateTime.log"));
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 2); // Times are also different.
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.DifferentLogTimeTypeException);
     }
@@ -345,7 +345,7 @@ public class SystemLogFileNameValidatorMockTest {
                 new UnixLogTime(124),
                 "Unixt_123_Sig-1743_Log-Sys_UpdateTime.log"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof AbstractLogMessageFileNameValidator.DifferentLogTimeException);
     }

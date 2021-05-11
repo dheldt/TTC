@@ -45,11 +45,14 @@ public class TransactionCounterValidator implements Validator {
         final String key= hexSerial+"_"+msg.getTransactionNumber();
         BigInteger transactionNumber = msg.getTransactionNumber();
         if("StartTransaction".equals(msg.getOperationType())){
-            if(expectedTransactionCounter.compareTo(transactionNumber)<0){
+            final int comparison = expectedTransactionCounter.compareTo(transactionNumber);
+            if(comparison<0){
                 result.add(new MissingTransactionCounterException(expectedTransactionCounter, msg));
                 expectedTransactionCounter = transactionNumber.add(BigInteger.ONE);
             }else{
-                expectedTransactionCounter = expectedTransactionCounter.add(BigInteger.ONE);
+                if(comparison== 0) {
+                    expectedTransactionCounter = expectedTransactionCounter.add(BigInteger.ONE);
+                }
             }
             expectedTransactionCounters.replace(hexSerial,expectedTransactionCounter);
 
@@ -58,6 +61,9 @@ public class TransactionCounterValidator implements Validator {
                 result.add(new DuplicateTransactionCounterFoundException(msg.getTransactionNumber(), msg));
                 duplicate.signatureCounterLastUpdate = msg.getSignatureCounter();
             }else{
+                if(comparison>0) {
+                    result.add(new DelayedTransActionCounterException(expectedTransactionCounter,msg));
+                }
                 openTransactions.put(key, new Transaction(msg));
             }
         }
@@ -82,7 +88,6 @@ public class TransactionCounterValidator implements Validator {
                 openTransactions.get(key).close();
             }
         }
-
         return result;
     }
 
@@ -155,6 +160,27 @@ public class TransactionCounterValidator implements Validator {
         MissingTransactionCounterException(BigInteger expectedTransactionCounter, TransactionLog msg) {
             super(msg);
             this.expectedTransactionCounter = expectedTransactionCounter;
+        }
+
+        @Override
+        public String toString(){
+            return "Missing transaction start: Transaction Number was "+((TransactionLog)getLogMessage()).getTransactionNumber()+", but "+expectedTransactionCounter+" was expected.";
+        }
+
+    }
+
+    static class DelayedTransActionCounterException extends LogMessageValidationException{
+        final BigInteger expectedTransactionCounter;
+
+        DelayedTransActionCounterException(BigInteger expectedTransactionCounter, TransactionLog msg) {
+            super(msg);
+            this.expectedTransactionCounter = expectedTransactionCounter;
+        }
+
+
+        @Override
+        public String toString(){
+            return "Delayed transaction start: Transaction Number was "+((TransactionLog)getLogMessage()).getTransactionNumber()+", but "+expectedTransactionCounter+" was expected.";
         }
     }
 }

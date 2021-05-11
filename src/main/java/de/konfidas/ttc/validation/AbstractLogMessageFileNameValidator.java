@@ -39,14 +39,14 @@ abstract class AbstractLogMessageFileNameValidator implements Validator{
     String[] components;
 
     @Override
-    public Collection<ValidationException> validate(LogMessageArchive tar) {
+    public ValidationResult validate(LogMessageArchive tar) {
         LinkedList<ValidationException> result = new LinkedList<>();
 
         for(LogMessage msg : tar.getLogMessages()){
             result.addAll(checkMsg(msg));
         }
 
-        return result;
+        return new ValidationResultImpl().append(Collections.singleton(this), result);
     }
 
     protected String[] getComponents(){return components;}

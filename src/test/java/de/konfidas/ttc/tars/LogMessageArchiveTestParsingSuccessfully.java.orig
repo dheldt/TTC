@@ -72,7 +72,12 @@ public class LogMessageArchiveTestParsingSuccessfully {
                 .add(new TimeStampValidator())
                 .add(new TransactionCounterValidator());
 
+<<<<<<< HEAD
         Collection<ValidationException> errors = v.validate(tar).getValidationErrors();
-        assertTrue(errors.size() == 301);
+        assertTrue(errors.isEmpty());
+=======
+        Collection<ValidationException> errors = v.validate(tar);
+        assertTrue(errors.size() == 7);
+>>>>>>> TransactionCounterValidation
     }
 }

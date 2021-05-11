@@ -81,7 +81,7 @@ public class TransActionCounterValidatorMockTest {
         TransactionCounterValidator validator = new TransactionCounterValidator();
         LogMessageArchive tar = new TestTar();
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
@@ -94,7 +94,7 @@ public class TransActionCounterValidatorMockTest {
 
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
@@ -106,7 +106,7 @@ public class TransActionCounterValidatorMockTest {
 
         messages.add(new LMM(new byte[]{0x01}, BigInteger.TWO, "StartTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.MissingTransactionCounterException);
     }
@@ -120,7 +120,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
         messages.add(new LMM(new byte[]{0x01}, BigInteger.TWO, "StartTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
@@ -133,7 +133,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.DuplicateTransactionCounterFoundException);
     }
@@ -146,7 +146,7 @@ public class TransActionCounterValidatorMockTest {
 
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.UpdateForNotOpenTransactionException);
@@ -159,7 +159,7 @@ public class TransActionCounterValidatorMockTest {
 
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.FinishForNotOpenTransactionException);
@@ -175,7 +175,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "UpdateTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.UpdateForClosedTransactionException);
@@ -191,7 +191,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.FinishForClosedTransactionException);
@@ -210,7 +210,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
 
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
 
         assertTrue(r.isEmpty());
     }
@@ -224,7 +224,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
         messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "StartTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.isEmpty());
     }
 
@@ -237,7 +237,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
         messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "UpdateTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.UpdateForNotOpenTransactionException);
     }
@@ -250,7 +250,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
         messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "FinishTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.FinishForNotOpenTransactionException);
     }
@@ -263,7 +263,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "StartTransaction"));
         messages.add(new LMM(new byte[]{0x02}, BigInteger.TWO, "StartTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.size() == 1);
         assertTrue(r.stream().findFirst().get() instanceof TransactionCounterValidator.MissingTransactionCounterException);
     }
@@ -278,7 +278,7 @@ public class TransActionCounterValidatorMockTest {
         messages.add(new LMM(new byte[]{0x01}, BigInteger.ONE, "FinishTransaction"));
         messages.add(new LMM(new byte[]{0x02}, BigInteger.ONE, "FinishTransaction"));
 
-        Collection<ValidationException> r = validator.validate(tar);
+        Collection<ValidationException> r = validator.validate(tar).getValidationErrors();
         assertTrue(r.isEmpty());
     }
 }
