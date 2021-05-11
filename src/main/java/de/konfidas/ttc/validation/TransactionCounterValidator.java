@@ -3,8 +3,9 @@ package de.konfidas.ttc.validation;
 import de.konfidas.ttc.exceptions.LogMessageValidationException;
 import de.konfidas.ttc.exceptions.ValidationException;
 import de.konfidas.ttc.messages.LogMessage;
-import de.konfidas.ttc.messages.TransactionLogMessage;
+import de.konfidas.ttc.messages.TransactionLog;
 import de.konfidas.ttc.tars.LogMessageArchive;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -12,106 +13,151 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-// FIXME: this is incomplete and does not work fully.
 public class TransactionCounterValidator implements Validator {
-    final HashMap<BigInteger,OpenTransaction> openTransactions;
-    BigInteger transactionCounter;
+    final HashMap<String, Transaction> openTransactions; // TODO: allow multiple TSE SERIAL
+    final HashMap<String,BigInteger> expectedTransactionCounters;
 
     TransactionCounterValidator(){
         openTransactions = new HashMap<>();
-        transactionCounter = BigInteger.ONE;
+        expectedTransactionCounters = new HashMap<>();
     }
 
     public Collection<ValidationException> validate(LogMessageArchive tar){
         ArrayList<ValidationException> result = new ArrayList<>();
 
-        Collection<? extends LogMessage> msgs = tar.getSortedLogMessages();
-
-        for(LogMessage msg : msgs){
-            if(msg instanceof TransactionLogMessage){
-                result.addAll(updateState((TransactionLogMessage) msg));
+        for(LogMessage msg : tar.getSortedLogMessages()){
+            if(msg instanceof TransactionLog){
+                result.addAll(updateState((TransactionLog) msg));
             }
         }
 
         return result;
     }
 
-
-
-    Collection<ValidationException> updateState(TransactionLogMessage msg) {
+    Collection<ValidationException> updateState(TransactionLog msg) {
         LinkedList <ValidationException> result = new LinkedList<>();
 
-        if("START".equals(msg.getProcessType())){
-            if(!transactionCounter.equals(msg.getTransactionNumber())){
-                result.add(new WrongTransactionCounterException(transactionCounter, msg));
-            }
+        final String hexSerial =  Hex.toHexString(msg.getSerialNumber());
+        BigInteger expectedTransactionCounter = BigInteger.ONE;
+        if(expectedTransactionCounters.containsKey(hexSerial)){
+            expectedTransactionCounter = expectedTransactionCounters.get(hexSerial);
+        }else{
+            expectedTransactionCounters.put(hexSerial,expectedTransactionCounter);
+        }
 
-            if(openTransactions.containsKey(msg.getTransactionNumber())){
-                OpenTransaction duplicate = openTransactions.get(msg.getTransactionNumber());
-                result.add(new DuplicateTransactionCounterFoundException(duplicate.msgs.get(0), msg));
-                duplicate.msgs.add(msg);
+        final String key= hexSerial+"_"+msg.getTransactionNumber();
+        BigInteger transactionNumber = msg.getTransactionNumber();
+        if("Start".equals(msg.getOperationType())){
+            if(expectedTransactionCounter.compareTo(transactionNumber)<0){
+                result.add(new MissingTransactionCounterException(expectedTransactionCounter, msg));
+                expectedTransactionCounter = transactionNumber.add(BigInteger.ONE);
+            }else{
+                expectedTransactionCounter = expectedTransactionCounter.add(BigInteger.ONE);
+            }
+            expectedTransactionCounters.replace(hexSerial,expectedTransactionCounter);
+
+            if(openTransactions.containsKey(key)){
+                Transaction duplicate = openTransactions.get(key);
+                result.add(new DuplicateTransactionCounterFoundException(msg.getTransactionNumber(), msg));
                 duplicate.signatureCounterLastUpdate = msg.getSignatureCounter();
             }else{
-                openTransactions.put(msg.getTransactionNumber(), new OpenTransaction(msg));
+                openTransactions.put(key, new Transaction(msg));
             }
-
-            // TODO: what is the next expected transaction number?
-            // transactionCounter +1 or msg.getTransactionNumber +1?
-            transactionCounter = transactionCounter.add(BigInteger.ONE);
         }
 
-        if("UPDATE".equals(msg.getProcessType())){
-            if(!openTransactions.containsKey(msg.getTransactionNumber())){
-                result.add(new UpdateForNotOpenTransactionException(transactionCounter, msg));
+        if("Update".equals(msg.getOperationType())){
+            if(!openTransactions.containsKey(key)){
+                result.add(new UpdateForNotOpenTransactionException(expectedTransactionCounter, msg));
             }else{
-                // TODO
+                if(!openTransactions.get(key).isOpen()){
+                    result.add(new UpdateForClosedTransactionException(expectedTransactionCounter, msg));
+                }
             }
         }
 
-        if("FINISH".equals(msg.getProcessType())){
-            // TODO
+        if("Finish".equals(msg.getOperationType())){
+            if(!openTransactions.containsKey(key)){
+                result.add(new FinishForNotOpenTransactionException(expectedTransactionCounter, msg));
+            }else{
+                if(!openTransactions.get(key).isOpen()){
+                    result.add(new FinishForClosedTransactionException(expectedTransactionCounter, msg));
+                }
+                openTransactions.get(key).close();
+            }
         }
 
         return result;
     }
 
 
-    static class OpenTransaction{
+    static class Transaction {
         BigInteger signatureCounterLastUpdate;
-        final LinkedList<TransactionLogMessage> msgs;
+        boolean isOpen;
 
-        public OpenTransaction(TransactionLogMessage msg) {
+        Transaction(TransactionLog msg) {
             this.signatureCounterLastUpdate = msg.getSignatureCounter();
-            msgs = new LinkedList<>();
-            msgs.add(msg);
+            isOpen = true;
         }
+
+        void close(){
+            isOpen = false;
+        }
+
+        boolean isOpen(){return isOpen;}
     }
 
 
     static class DuplicateTransactionCounterFoundException extends LogMessageValidationException {
-        final TransactionLogMessage msg2;
+        final BigInteger expectedCounter;
 
-        public DuplicateTransactionCounterFoundException(TransactionLogMessage msg1, TransactionLogMessage msg2) {
-            super(msg1);
-            this.msg2 = msg2;
+        DuplicateTransactionCounterFoundException(BigInteger expectedCounter, TransactionLog msg) {
+            super(msg);
+            this.expectedCounter = expectedCounter;
         }
     }
 
     static class UpdateForNotOpenTransactionException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
-        public UpdateForNotOpenTransactionException(BigInteger transactionCounter, TransactionLogMessage msg) {
+        UpdateForNotOpenTransactionException(BigInteger transactionCounter, TransactionLog msg) {
             super(msg);
             this.expectedTransactionCounter = transactionCounter;
         }
     }
 
-    static class WrongTransactionCounterException extends LogMessageValidationException{
+    static class UpdateForClosedTransactionException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
-        public WrongTransactionCounterException(BigInteger transactionCounter, TransactionLogMessage msg) {
+        UpdateForClosedTransactionException(BigInteger transactionCounter, TransactionLog msg) {
             super(msg);
             this.expectedTransactionCounter = transactionCounter;
+        }
+    }
+
+    static class FinishForNotOpenTransactionException extends LogMessageValidationException{
+        final BigInteger expectedTransactionCounter;
+
+        FinishForNotOpenTransactionException(BigInteger transactionCounter, TransactionLog msg) {
+            super(msg);
+            this.expectedTransactionCounter = transactionCounter;
+        }
+    }
+
+    static class FinishForClosedTransactionException extends LogMessageValidationException{
+        final BigInteger expectedTransactionCounter;
+
+        FinishForClosedTransactionException(BigInteger transactionCounter, TransactionLog msg) {
+            super(msg);
+            this.expectedTransactionCounter = transactionCounter;
+        }
+    }
+
+    static class MissingTransactionCounterException extends LogMessageValidationException{
+        final BigInteger expectedTransactionCounter;
+
+        MissingTransactionCounterException(BigInteger expectedTransactionCounter, TransactionLog msg) {
+            super(msg);
+            this.expectedTransactionCounter = expectedTransactionCounter;
         }
     }
 }
