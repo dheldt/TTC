@@ -20,11 +20,6 @@ import java.util.NoSuchElementException;
  * Diese Klasse repräsentiert eine initializeSystemLog Message. Dabei werden in der Methode
  * parseSystemOperationDataContent die folgenden Elemente aus systemOperationData geparst
  * <pre>
- * ╔═══════════════════════╤══════╤═══════════════════════════════════════════════════════════════╤════════════╗
- * ║ Data field            │ Tag  │ Data Type                                                     │ Mandatory? ║
- * ╠═══════════════════════╪══════╪═══════════════════════════════════════════════════════════════╪════════════╣
- * ║ description           │ 0x81 │ PrintableString                                               │ m          ║
- * ╚═══════════════════════╧══════╧══════════════════════════════════╧═════════════════════════════════════════╝
  * </pre>
  */
 public class InitializeSystemLogMessage extends SystemLogMessage {

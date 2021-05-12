@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <title>TTC - advanced HTML report</title>
+</head>
+
+<script>
+    function toggleDiv(id) {
+        var x = document.getElementById(id);
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>
+
+
+<body>
+
+
+<div id="header"></div>
+
+<div id="menu">
+    Conclusion | Logs | Transactions | Certificates | Issues
+</div>
+
+<div id="report">
+    <div id="conclusion">
+        $Conclusion
+    </div>
+
+    <div id="validators">
+        $Validators
+    </div>
+
+    <div id="logs">
+        Hide Audit Logs | Hide Sys Logs | Hide Legit Logs | Hide Transaction Logs
+
+        $Logs
+    </div>
+
+    <div id="transactions">
+        $Transactions
+    </div>
+
+    <div id="Certificates">
+        $Certificates
+    </div>
+    
+    <div id="issues">
+        $Issues
+    </div>
+</div>
+
+<div id="footer">
+    This report was generated with TTC (https://github.com/konfidas/TTC) on {$Date}. 
+</div>
+
+</body>
+
+</html>

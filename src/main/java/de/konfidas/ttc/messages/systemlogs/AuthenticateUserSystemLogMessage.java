@@ -20,15 +20,7 @@ import java.util.NoSuchElementException;
  * Diese Klasse repräsentiert eine authenticateUserSystemLog Message. Dabei werden in der Methode
  * parseSystemOperationDataContent die folgenden Elemente aus systemOperationData geparst
  * <pre>
- * ╔═══════════════════════╤══════╤═══════════════════════════════════════════════════════════════╤════════════╗
- * ║ Data field            │ Tag  │ Data Type                                                     │ Mandatory? ║
- * ╠═══════════════════════╪══════╪═══════════════════════════════════════════════════════════════╪════════════╣
- * ║ userID                │ 0x81 │ PrintableString                                               │ m          ║
- * ╟───────────────────────┼──────┼───────────────────────────────────────────────────────────────┼────────────╢
- * ║ role                  │ 0x82 │ ENUMERATED{ admin, timeAdmin }                                │ m          ║
- * ╟───────────────────────┼──────┼───────────────────────────────────────────────────────────────┼────────────╢
- * ║ authenticationResult  │ 0x83 │ BOOLEAN                                                       │ m          ║
- * ╚═══════════════════════╧══════╧══════════════════════════════════╧═════════════════════════════════════════╝
+
  * </pre>
  */
 public class AuthenticateUserSystemLogMessage extends SystemLogMessage {

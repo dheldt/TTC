@@ -20,11 +20,6 @@ import java.util.NoSuchElementException;
  * Diese Klasse repräsentiert eine disableSecureElementSystemLog Message. Dabei werden in der Methode
  * parseSystemOperationDataContent die folgenden Elemente aus systemOperationData geparst
  * <pre>
- * ╔═══════════════════════╤══════╤═══════════════════════════════════════════════════════════════╤════════════╗
- * ║ Data field            │ Tag  │ Data Type                                                     │ Mandatory? ║
- * ╠═══════════════════════╪══════╪═══════════════════════════════════════════════════════════════╪════════════╣
- * ║ timeOfDeactivation    │ 0x81 │ Time                                                          │ m          ║
- * ╚═══════════════════════╧══════╧════════════════════════════════════════════════════════════════════════════╝
  * </pre>
  */
 public class DisableSecureElementSystemLogMessage extends SystemLogMessage {

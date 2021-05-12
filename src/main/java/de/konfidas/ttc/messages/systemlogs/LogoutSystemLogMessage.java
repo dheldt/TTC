@@ -22,13 +22,6 @@ import java.util.NoSuchElementException;
  * Diese Klasse repräsentiert eine logoutSystemLog Message. Dabei werden in der Methode
  * parseSystemOperationDataContent die folgenden Elemente aus systemOperationData geparst
  * <pre>
- * ╔═══════════════════════╤══════╤═══════════════════════════════════════════════════════════════╤════════════╗
- * ║ Data field            │ Tag  │ Data Type                                                     │ Mandatory? ║
- * ╠═══════════════════════╪══════╪═══════════════════════════════════════════════════════════════╪════════════╣
- * ║ userID                │ 0x81 │ PrintableString                                               │ m          ║
- * ╟───────────────────────┼──────┼───────────────────────────────────────────────────────────────┼────────────╢
- * ║ logOutCause           │ 0x82 │ ENUMERATED{ user, timeout }                                   │ m          ║
- * ╚═══════════════════════╧══════╧═══════════════════════════════════════════════════════════════╧════════════╝
  * </pre>
  */
 public class LogoutSystemLogMessage extends SystemLogMessage {
@@ -70,13 +63,9 @@ public class LogoutSystemLogMessage extends SystemLogMessage {
     String userIDAsString;
     BigInteger logoutCauseAsBigInteger;
 
-
-
-
     public LogoutSystemLogMessage(byte[] content, String filename) throws BadFormatForLogMessageException {
         super(content, filename);
     }
-
 
     @Override
         protected void parseSystemOperationDataContent(ASN1InputStream stream) throws SystemLogParsingException, IOException {

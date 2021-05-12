@@ -22,13 +22,6 @@ import java.util.NoSuchElementException;
  * Diese Klasse repräsentiert eine updateTimeSystemLog Message. Dabei werden in der Methode
  * parseSystemOperationDataContent die folgenden Elemente aus systemOperationData geparst
  * <pre>
- * ╔═══════════════════════╤══════╤═══════════════════════════════════════════════════════════════╤════════════╗
- * ║ Data field            │ Tag  │ Data Type                                                     │ Mandatory? ║
- * ╠═══════════════════════╪══════╪═══════════════════════════════════════════════════════════════╪════════════╣
- * ║ timeBeforeUpdate      │ 0x81 │ Time                                                          │ m          ║
- * ╟───────────────────────┼──────┼───────────────────────────────────────────────────────────────┼────────────╢
- * ║ timeAfterUpdate       │ 0x82 │ Time                                                          │ m          ║
- * ╚═══════════════════════╧══════╧════════════════════════════════════════════════════════════════════════════╝
  * </pre>
  */
 public class UpdateTimeSystemLogMessage extends SystemLogMessage {

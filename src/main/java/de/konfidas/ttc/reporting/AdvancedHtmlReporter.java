@@ -2,7 +2,10 @@ package de.konfidas.ttc.reporting;
 
 import de.konfidas.ttc.exceptions.LogMessageValidationException;
 import de.konfidas.ttc.exceptions.ValidationException;
+import de.konfidas.ttc.messages.AuditLog;
 import de.konfidas.ttc.messages.LogMessage;
+import de.konfidas.ttc.messages.SystemLog;
+import de.konfidas.ttc.messages.TransactionLog;
 import de.konfidas.ttc.tars.LogMessageArchive;
 import de.konfidas.ttc.validation.ValidationResult;
 import de.konfidas.ttc.validation.Validator;
@@ -16,6 +19,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+/**
+ *  This reporter uses org.apache.commons.io.FileUtils to fill HTML-Templates with a report.
+ *  cf. https://stackoverflow.com/questions/5936003/write-html-file-using-java/15368262
+ */
 public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not need the int here. Interface does not really fit me.
     File file;
     boolean skipLegitLogMessages;
@@ -43,7 +50,11 @@ public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not nee
             printHeader(bw);
 
             printTars(bw, logs);
-            printValidators(bw,vResult.getValidators());
+
+            String validatorsTemplate = "To generate this report, the following validators were used:\n<ul>\n$validators</ul>\n\n";
+            String validatorTemplate = "  <li>$name ($class)</li>\n";
+
+            bw.write(printValidators(vResult.getValidators(), validatorsTemplate, validatorTemplate));
 
             printErrorNum(bw, vResult.getValidationErrors());
 
@@ -110,7 +121,21 @@ public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not nee
             bgColor = "#FF0000";
         }
         bw.write("<div id="+id+" style=\"background-color:"+bgColor+"\">\n");
-        bw.write("  "+lm.getFileName()+": \n");
+
+        String type = "Log Message";
+        if(lm instanceof TransactionLog){
+            type = "Transaction Log";
+        }
+        if(lm instanceof AuditLog){
+            type= "Audit Log";
+        }
+        if(lm instanceof SystemLog){
+            type="System Log";
+        }
+
+//        bw.write("  "+lm.getFileName()+": \n");
+        bw.write(type+" #"+lm.getSignatureCounter()+" ("+lm.getClass().getSimpleName()+")");
+
 
         if(!map.containsKey(lm)){
         }else{
@@ -139,17 +164,24 @@ public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not nee
         bw.write("</ul></p>");
     }
 
-
-    void printValidators(BufferedWriter bw, Collection<Validator> validators) throws IOException {
-        bw.write("<p> To generate this report, the following validators were used:");
-        bw.write("<ul>");
-
-        for(Validator v: validators){
-            bw.write("<li>"+v.getClass()+"</li>");
-        }
-        bw.write("</ul></p>");
+    String printValidator(Validator validator, String htmlTemplate){
+        return htmlTemplate
+                .replace("$name",validator.getClass().getSimpleName())
+                .replace("$class",validator.getClass().getName());
     }
 
+    String printValidators(Collection<Validator> validators, String validatorsTemplate, String validatorTemplate) throws IOException {
+//        bw.write("<p> To generate this report, the following validators were used:");
+//        bw.write("<ul>");
+
+        StringBuilder builder = new StringBuilder();
+
+        for(Validator v: validators){
+            builder.append(printValidator(v, validatorTemplate));
+        }
+
+        return validatorsTemplate.replace("$validators", builder.toString());
+    }
 
     static void printHeader(BufferedWriter bw) throws IOException {
         bw.write("<html><head><title>Report</title></head><body>");
