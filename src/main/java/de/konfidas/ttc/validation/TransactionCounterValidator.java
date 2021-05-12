@@ -109,7 +109,7 @@ public class TransactionCounterValidator implements Validator {
     }
 
 
-    static class DuplicateTransactionCounterFoundException extends LogMessageValidationException {
+    public static class DuplicateTransactionCounterFoundException extends LogMessageValidationException {
         final BigInteger expectedCounter;
 
         DuplicateTransactionCounterFoundException(BigInteger expectedCounter, TransactionLog msg) {
@@ -118,7 +118,7 @@ public class TransactionCounterValidator implements Validator {
         }
     }
 
-    static class UpdateForNotOpenTransactionException extends LogMessageValidationException{
+    public static class UpdateForNotOpenTransactionException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
         UpdateForNotOpenTransactionException(BigInteger transactionCounter, TransactionLog msg) {
@@ -127,7 +127,7 @@ public class TransactionCounterValidator implements Validator {
         }
     }
 
-    static class UpdateForClosedTransactionException extends LogMessageValidationException{
+    public static class UpdateForClosedTransactionException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
         UpdateForClosedTransactionException(BigInteger transactionCounter, TransactionLog msg) {
@@ -136,7 +136,7 @@ public class TransactionCounterValidator implements Validator {
         }
     }
 
-    static class FinishForNotOpenTransactionException extends LogMessageValidationException{
+    public static class FinishForNotOpenTransactionException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
         FinishForNotOpenTransactionException(BigInteger transactionCounter, TransactionLog msg) {
@@ -145,7 +145,7 @@ public class TransactionCounterValidator implements Validator {
         }
     }
 
-    static class FinishForClosedTransactionException extends LogMessageValidationException{
+    public static class FinishForClosedTransactionException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
         FinishForClosedTransactionException(BigInteger transactionCounter, TransactionLog msg) {
@@ -154,7 +154,7 @@ public class TransactionCounterValidator implements Validator {
         }
     }
 
-    static class MissingTransactionCounterException extends LogMessageValidationException{
+    public static class MissingTransactionCounterException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
         MissingTransactionCounterException(BigInteger expectedTransactionCounter, TransactionLog msg) {
@@ -169,7 +169,7 @@ public class TransactionCounterValidator implements Validator {
 
     }
 
-    static class DelayedTransActionCounterException extends LogMessageValidationException{
+    public static class DelayedTransActionCounterException extends LogMessageValidationException{
         final BigInteger expectedTransactionCounter;
 
         DelayedTransActionCounterException(BigInteger expectedTransactionCounter, TransactionLog msg) {
