@@ -40,6 +40,11 @@ public class SignatureCounterValidatorMockedTest {
         public Collection<? extends LogMessage> getSortedLogMessages() {
             return messages;
         }
+
+        @Override
+        public String getFileName() {
+            return "";
+        }
     }
     static class LMM extends LogMessageMock {
         BigInteger signatureCounter;

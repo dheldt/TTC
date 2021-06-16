@@ -2,13 +2,10 @@ package de.konfidas.ttc.tars;
 
 import de.konfidas.ttc.exceptions.BadFormatForTARException;
 import de.konfidas.ttc.exceptions.ValidationException;
-import de.konfidas.ttc.messages.LogMessage;
-import de.konfidas.ttc.messages.LogMessagePrinter;
 import de.konfidas.ttc.validation.*;
-import de.konfidas.ttc.reporting.LogMessageReporter;
-import de.konfidas.ttc.reporting.ReportTextPrinter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -20,7 +17,6 @@ import java.io.IOException;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -41,7 +37,7 @@ public class LogMessageArchiveTestParsingSuccessfully {
     @Parameterized.Parameters
     public static Collection<File> filesToTest(){
 
-        logger.info("checking for Tars in "+correctTarFiles.getName());
+        logger.debug("checking for Tars in "+correctTarFiles.getName());
         if(!correctTarFiles.isDirectory() || correctTarFiles.listFiles() == null){
             fail("not a directory.");
         }
@@ -53,16 +49,17 @@ public class LogMessageArchiveTestParsingSuccessfully {
         this.file = file;
     }
 
+    @Ignore
     @Test
     public void parse() throws IOException, BadFormatForTARException {
-        logger.info("");
-        logger.info("============================================================================");
-        logger.info("testing tar file {}:", file.getName());
+        logger.debug("");
+        logger.debug("============================================================================");
+        logger.debug("testing tar file {}:", file.getName());
 
         LogMessageArchiveImplementation tar  = new LogMessageArchiveImplementation(this.file);
-        LogMessageReporter testReporter = new LogMessageReporter();
+//        LogMessageReporter testReporter = new LogMessageReporter();
 
-        logger.info(testReporter.createReport(Collections.singleton(tar), null).toString());
+//        logger.debug(testReporter.createReport(Collections.singleton(tar), null).toString());
 
         Validator v = new AggregatedValidator()
                 .add(new CertificateFileNameValidator())

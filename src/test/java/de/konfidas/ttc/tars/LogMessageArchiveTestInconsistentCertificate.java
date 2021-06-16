@@ -4,6 +4,7 @@ package de.konfidas.ttc.tars;
 import de.konfidas.ttc.exceptions.BadFormatForTARException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,7 +35,7 @@ public class LogMessageArchiveTestInconsistentCertificate {
 
     @Parameterized.Parameters
     public static Collection<File> filesToTest() {
-        logger.info("checking for Tars in " + brokenTarFiles.getName());
+        logger.debug("checking for Tars in " + brokenTarFiles.getName());
         if (!brokenTarFiles.isDirectory() || brokenTarFiles.listFiles() == null) {
             return Collections.EMPTY_LIST;
         }
@@ -45,11 +46,12 @@ public class LogMessageArchiveTestInconsistentCertificate {
         this.file = file;
     }
 
+    @Ignore
     @Test
     public void parse() throws IOException {
-        logger.info("");
-        logger.info("============================================================================");
-        logger.info("testing tar file {}:", file.getName());
+        logger.debug("");
+        logger.debug("============================================================================");
+        logger.debug("testing tar file {}:", file.getName());
 
         try {
             new LogMessageArchiveImplementation(this.file);

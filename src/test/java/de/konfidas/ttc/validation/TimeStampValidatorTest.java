@@ -5,6 +5,7 @@ import de.konfidas.ttc.exceptions.ValidationException;
 import de.konfidas.ttc.tars.LogMessageArchiveImplementation;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -45,11 +46,12 @@ public class TimeStampValidatorTest {
         this.expectedNumberOfErrors = expectedNumberOfErrors;
     }
 
+    @Ignore
     @Test
     public void parse() {
-        logger.info("");
-        logger.info("============================================================================");
-        logger.info("testing tar file {}:", file.getName());
+        logger.debug("");
+        logger.debug("============================================================================");
+        logger.debug("testing tar file {}:", file.getName());
 
         try {
             TimeStampValidator validator = new TimeStampValidator();

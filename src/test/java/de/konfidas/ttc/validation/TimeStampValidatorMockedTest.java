@@ -43,6 +43,11 @@ public class TimeStampValidatorMockedTest {
         public Collection<? extends LogMessage> getSortedLogMessages() {
             return messages;
         }
+
+        @Override
+        public String getFileName() {
+            return "";
+        }
     }
     static class LMM extends LogMessageMock{
         LogTime time;

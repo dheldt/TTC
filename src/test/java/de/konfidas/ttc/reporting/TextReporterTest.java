@@ -1,7 +1,6 @@
 package de.konfidas.ttc.reporting;
 
 import de.konfidas.ttc.exceptions.BadFormatForTARException;
-import de.konfidas.ttc.exceptions.ValidationException;
 import de.konfidas.ttc.tars.LogMessageArchiveImplementation;
 import de.konfidas.ttc.validation.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -13,7 +12,6 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,7 +20,7 @@ import java.util.Collections;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class HtmlReporterTest {
+public class TextReporterTest {
 
     final static File correctTarFiles = new File("testdata/positive/");
 
@@ -43,7 +41,7 @@ public class HtmlReporterTest {
     }
 
 
-    public HtmlReporterTest(File file){
+    public TextReporterTest(File file){
         this.file = file;
     }
 
@@ -52,24 +50,23 @@ public class HtmlReporterTest {
     public void createReport() throws IOException, BadFormatForTARException, Reporter.ReporterException {
         LogMessageArchiveImplementation tar  = new LogMessageArchiveImplementation(this.file);
 
+//        File reportFile = new File("./Report_"+this.file.getName()+".html");
 
-        File reportFile = new File("./Report_"+this.file.getName()+".html");
-        File advancedReportFile = new File("./AdvancedReport_"+this.file.getName()+".html");
 
         Validator v = new AggregatedValidator()
                 .add(new CertificateFileNameValidator())
                 .add(new LogMessageSignatureValidator())
-                .add(new SignatureCounterValidator())
-                .add(new TransactionCounterValidator())
-                .add(new TimeStampValidator())
-                .add(new LogMessageFileNameValidator());
+                .add(new SignatureCounterValidator());
 
         ValidationResult result = v.validate(tar);
 
-        HtmlReporter reporter = new HtmlReporter().skipLegitLogMessages();
-        Files.writeString(reportFile.toPath(), reporter.createReport(Collections.singleton(tar),result,true));
+        TextReporter reporter = new TextReporter().skipLegitLogMessages();
 
-        System.out.println(reportFile.getAbsoluteFile());
+
+        // enable the following line ot make the reporter ignore this Exception class, i.e. not reporting it:
+        // reporter.ignoreIssue(SignatureCounterValidator.SignatureCounterMissingException.class);
+
+        System.out.println(reporter.createReport(Collections.singleton(tar), result, false));
     }
 
 }
