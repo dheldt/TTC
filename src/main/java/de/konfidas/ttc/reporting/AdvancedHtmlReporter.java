@@ -54,6 +54,8 @@ public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not nee
             String validatorsTemplate = "To generate this report, the following validators were used:\n<ul>\n$validators</ul>\n\n";
             String validatorTemplate = "  <li>$name ($class)</li>\n";
 
+            String logMessageTemplate = "";
+
             bw.write(printValidators(vResult.getValidators(), validatorsTemplate, validatorTemplate));
 
             printErrorNum(bw, vResult.getValidationErrors());
@@ -105,22 +107,23 @@ public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not nee
         if(skipLegitLogMessages){
             bw.write("(legit log messages were skipped in this report)<br>");
         }
+
+        String logMessageTemplate = "<div id=\"$id\" style=\"background-color:$bgColor\">\n"
+                +"$type # $sigCounter ($class)<br>\n"
+                +"Issues:"
+                +"<ul>\n $issues </ul>\n"
+                +"</div>";
+
         for(LogMessageArchive tar : logs){
             for (LogMessage lm : tar.getSortedLogMessages()){
-                printLogMessage(bw, map, lm);
+                bw.write(printLogMessage(map, lm, logMessageTemplate));
 
             }
         }
     }
 
-    void printLogMessage(BufferedWriter bw, HashMap<LogMessage, LinkedList<LogMessageValidationException>> map, LogMessage lm) throws IOException {
+    String printLogMessage(HashMap<LogMessage, LinkedList<LogMessageValidationException>> map, LogMessage lm, String logMessageTemplate) throws IOException {
         final String id= "LogMessage"+lm.hashCode();
-
-        String bgColor = "#00FF00";
-        if(map.containsKey(lm)){
-            bgColor = "#FF0000";
-        }
-        bw.write("<div id="+id+" style=\"background-color:"+bgColor+"\">\n");
 
         String type = "Log Message";
         if(lm instanceof TransactionLog){
@@ -133,20 +136,21 @@ public class AdvancedHtmlReporter implements Reporter<Integer> { // I do not nee
             type="System Log";
         }
 
-//        bw.write("  "+lm.getFileName()+": \n");
-        bw.write(type+" #"+lm.getSignatureCounter()+" ("+lm.getClass().getSimpleName()+")");
+        StringBuilder builder = new StringBuilder();
 
-
-        if(!map.containsKey(lm)){
-        }else{
-            bw.write("  <ul>\n");
+        String bgColor = "#00FF00";
+        if(map.containsKey(lm)){
+            bgColor = "#FF0000";
             for(LogMessageValidationException e : map.get(lm)) {
-                bw.write("    <li>" + e.toString() + "</li>\n");
+                builder.append("<li>"+e.toString()+"</li>\n");
             }
-            bw.write("  </ul>\n");
-       
         }
-        bw.write("</div>\n");
+
+        return logMessageTemplate.replace("$bgColor", bgColor)
+                .replace("$type", type)
+                .replace("$sigCounter", lm.getSignatureCounter().toString())
+                .replace("$class", lm.getClass().getName())
+                .replace("$issues", builder.toString());
     }
 
     void printErrorNum(BufferedWriter bw, Collection<ValidationException> validationErrors) throws IOException {
